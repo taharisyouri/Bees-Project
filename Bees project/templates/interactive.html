@@ -1,0 +1,271 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Interactive</title>
+
+  <style>
+    :root{
+      --red: #c1121f;
+      --green: #2a9d3f;
+      --bg: #f7fff7;
+      --card: #ffffff;
+      --border: #d7ead9;
+      --text: #122018;
+    }
+
+    body{
+      font-family: system-ui, Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page{
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      box-sizing: border-box;
+      align-items: center;
+    }
+
+    .topbar{
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, rgba(193,18,31,0.12), rgba(42,157,63,0.12));
+      border: 1px solid rgba(42,157,63,0.25);
+      box-sizing: border-box;
+    }
+
+    .title{
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .back{
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid rgba(193,18,31,0.35);
+      background: rgba(193,18,31,0.10);
+      color: var(--red);
+      font-weight: 650;
+    }
+
+    .card{
+      width: 100%;
+      max-width: 800px;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      border: 2px solid var(--border);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 260px;
+    }
+
+    img{
+      width: 260px;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      -webkit-user-drag: none;
+      user-select: none;
+    }
+
+    .actions{
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .btn{
+      flex: 1;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 650;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+
+      box-sizing: border-box;
+    }
+
+    /* Sound button (play icon) */
+    .btn.sound{
+      background: rgba(42,157,63,0.14);
+      border-color: rgba(42,157,63,0.45);
+      color: var(--green);
+    }
+
+    /* Narrative button */
+    .btn.narrative{
+      background: rgba(193,18,31,0.12);
+      border-color: rgba(193,18,31,0.45);
+      color: var(--red);
+    }
+
+    /* Next (shuffle) button */
+    .btn.next{
+      text-decoration: none; /* for <a> */
+      background: rgba(18,32,24,0.06);
+      border-color: rgba(18,32,24,0.18);
+      color: var(--text);
+    }
+
+    .btn:active{
+      transform: translateY(1px);
+    }
+
+    .playIcon, .shuffleIcon{
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+    }
+
+    .status{
+      width: 100%;
+      max-width: 800px;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .narrativeBox{
+      width: 100%;
+      max-width: 800px;
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      background: white;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      display: none;
+    }
+
+    @media (max-width: 700px){
+      .actions{ flex-direction: column; }
+      img{ width: 220px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="title">Interactive</div>
+      <a class="back" href="/">Back</a>
+    </div>
+
+    <div class="card">
+      <img src="/static/images/bees/{{ chosen_image }}" alt="bee" draggable="false">
+    </div>
+
+    <div class="actions">
+      <!-- Play sound -->
+      <button class="btn sound" id="soundBtn" type="button" aria-label="Play sound">
+        <svg class="playIcon" viewBox="0 0 64 64" role="img" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" fill="currentColor"></circle>
+          <polygon points="28,22 28,42 44,32" fill="white"></polygon>
+        </svg>
+      </button>
+
+      <!-- Show narrative -->
+      <button class="btn narrative" id="narrativeBtn" type="button">Narrative</button>
+
+      <!-- Next bee (shuffle) -->
+      <a class="btn next" id="nextBtn" href="/interactive" aria-label="Next bee">
+        <svg class="shuffleIcon" viewBox="0 0 24 24" role="img" aria-hidden="true">
+          <path d="M16 3h5v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 20l7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 4l7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13 17l3 3h5v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21 8c-4 0-5 0-8 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13 13c3 3 4 3 8 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="status" id="statusText">Pick an action.</div>
+    <div class="narrativeBox" id="narrativeBox"></div>
+  </div>
+
+  <script>
+    const beeId = "{{ chosen_id }}";
+
+    const statusText = document.getElementById("statusText");
+    const narrativeBox = document.getElementById("narrativeBox");
+    const soundBtn = document.getElementById("soundBtn");
+    const narrativeBtn = document.getElementById("narrativeBtn");
+
+    let audio = null;
+
+    function prettyName(id) {
+      const spaced = id.replace(/([a-z])([A-Z])/g, "$1 $2");
+      return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+    }
+
+    const beeName = prettyName(beeId);
+
+    function stopAudio() {
+      if (!audio) return;
+      audio.pause();
+      audio.currentTime = 0;
+      audio = null;
+    }
+
+    soundBtn.addEventListener("click", () => {
+      narrativeBox.style.display = "none";
+      narrativeBox.textContent = "";
+
+      stopAudio();
+      audio = new Audio("/static/sounds/" + beeId + ".wav");
+      audio.play();
+
+      statusText.textContent = `${beeName} sound played`;
+    });
+
+    narrativeBtn.addEventListener("click", async () => {
+      statusText.textContent = `Loading ${beeName} narrative...`;
+      narrativeBox.style.display = "none";
+      narrativeBox.textContent = "";
+
+      const res = await fetch("/api/narrative/" + beeId);
+      if (!res.ok) {
+        statusText.textContent = `${beeName} narrative displayed`;
+        narrativeBox.style.display = "block";
+        narrativeBox.textContent = "No narrative file found for: " + beeId;
+        return;
+      }
+
+      const text = await res.text();
+      statusText.textContent = `${beeName} narrative displayed`;
+      narrativeBox.style.display = "block";
+      narrativeBox.textContent = text;
+    });
+
+    window.addEventListener("beforeunload", stopAudio);
+  </script>
+</body>
+</html>
