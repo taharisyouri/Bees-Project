@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bee Gallery</title>
+
+  <style>
+    :root{
+      --red: #c1121f;
+      --green: #2a9d3f;
+      --bg: #f7fff7;
+      --card: #ffffff;
+      --border: #d7ead9;
+      --text: #122018;
+    }
+
+    body{
+      font-family: system-ui, Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page{
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    .header{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, rgba(193,18,31,0.12), rgba(42,157,63,0.12));
+      border: 1px solid rgba(42,157,63,0.25);
+    }
+
+    h1{
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.2px;
+    }
+
+    .grid{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card{
+      background: var(--card);
+      border-radius: 16px;
+      padding: 12px;
+      border: 2px solid var(--border);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      min-height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card:hover{
+      border-color: rgba(193,18,31,0.45);
+    }
+
+    img{
+      width: 215px;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .bottom{
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding-top: 18px;
+    }
+
+    .buttons{
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .btn{
+      flex: 1;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 650;
+
+      text-decoration: none;
+      text-align: center;
+      display: inline-block;
+      box-sizing: border-box;
+    }
+
+    .btn.interactive{
+      background: rgba(42,157,63,0.14);
+      border-color: rgba(42,157,63,0.45);
+      color: var(--green);
+    }
+
+    .btn.game{
+      background: rgba(193,18,31,0.12);
+      border-color: rgba(193,18,31,0.45);
+      color: var(--red);
+    }
+
+    .btn:active{
+      transform: translateY(1px);
+    }
+
+    .status{
+      font-size: 14px;
+    }
+
+    @media (max-width: 700px){
+      .grid{ grid-template-columns: 1fr; }
+      .card{ min-height: 110px; }
+      img{ width: 187px; }
+      .buttons{ flex-direction: column; max-width: 360px; }
+      .btn{ width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>Bee Gallery</h1>
+    </div>
+
+    <div class="grid">
+      {% for filename in bee_images %}
+        <div class="card">
+          <img src="/static/images/bees/{{ filename }}" alt="bee">
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="bottom">
+      <div class="buttons">
+        <a class="btn interactive" href="/interactive">Interactive</a>
+        <button class="btn game" id="gameBtn" type="button">Game</button>
+      </div>
+
+      <div class="status" id="statusText">Choose a mode.</div>
+    </div>
+  </div>
+
+  <script>
+    const statusText = document.getElementById("statusText");
+    document.getElementById("gameBtn").addEventListener("click", () => {
+      statusText.textContent = "Game coming later";
+    });
+  </script>
+</body>
+</html>
