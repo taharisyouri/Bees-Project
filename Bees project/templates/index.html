@@ -156,18 +156,11 @@
     <div class="bottom">
       <div class="buttons">
         <a class="btn interactive" href="/interactive">Interactive</a>
-        <button class="btn game" id="gameBtn" type="button">Game</button>
+        <a class="btn game" href="/game">Game</a>
       </div>
 
-      <div class="status" id="statusText">Choose a mode.</div>
+      <div class="status">Choose a mode.</div>
     </div>
   </div>
-
-  <script>
-    const statusText = document.getElementById("statusText");
-    document.getElementById("gameBtn").addEventListener("click", () => {
-      statusText.textContent = "Game coming later";
-    });
-  </script>
 </body>
 </html>

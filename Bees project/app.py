@@ -16,11 +16,35 @@ BEE_IMAGES = [
     "yellowjacket.png",
 ]
 
-# map: beeId -> filename
+# beeId -> filename
 BEE_FILES = {Path(f).stem: f for f in BEE_IMAGES}
 BEE_IDS = list(BEE_FILES.keys())
 
 NARR_DIR = Path("static/narratives")
+
+# 5 quiz questions (answer must be one of the beeIds)
+GAME_QUESTIONS = [
+    {
+        "question": "Which bee can 'buzz pollinate' by vibrating flowers to release pollen?",
+        "answer": "bumbleBee",
+    },
+    {
+        "question": "Which insect here is not a bee, but mimics bees and can hover in place?",
+        "answer": "hoverfly",
+    },
+    {
+        "question": "Which one makes tunnels in wood to build nests?",
+        "answer": "carpenterBee",
+    },
+    {
+        "question": "Which one is known for making honey and living in large colonies with a queen?",
+        "answer": "honeyBee",
+    },
+    {
+        "question": "Which one often scavenges at picnics and can sting multiple times?",
+        "answer": "yellowjacket",
+    },
+]
 
 
 @app.get("/")
@@ -30,15 +54,15 @@ def home():
 
 @app.get("/interactive")
 def interactive():
+    # No repeats until all 8 are shown (deck in session)
     order = session.get("bee_order", [])
     last = session.get("last_bee", None)
 
-    # If deck is empty, refill + shuffle
     if not order:
         order = BEE_IDS.copy()
         random.shuffle(order)
 
-        # optional: avoid immediate repeat across cycles
+        # avoid immediate repeat across cycles
         if last and len(order) > 1 and order[0] == last:
             tries = 0
             while order[0] == last and tries < 10:
@@ -68,5 +92,15 @@ def narrative(bee_id: str):
     return Response(text, mimetype="text/plain; charset=utf-8")
 
 
+@app.get("/game")
+def game():
+    return render_template(
+        "game.html",
+        bee_files=BEE_FILES,
+        questions=GAME_QUESTIONS
+    )
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Use 8000 to avoid macOS AirTunes/AirPlay on 5000
+    app.run(debug=True, host="127.0.0.1", port=8000)

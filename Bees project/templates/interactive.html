@@ -108,32 +108,25 @@
       gap: 10px;
 
       box-sizing: border-box;
+      text-decoration: none;
     }
 
-    /* Sound button (play icon) */
     .btn.sound{
       background: rgba(42,157,63,0.14);
       border-color: rgba(42,157,63,0.45);
       color: var(--green);
     }
 
-    /* Narrative button */
     .btn.narrative{
       background: rgba(193,18,31,0.12);
       border-color: rgba(193,18,31,0.45);
       color: var(--red);
     }
 
-    /* Next (shuffle) button */
     .btn.next{
-      text-decoration: none; /* for <a> */
       background: rgba(18,32,24,0.06);
       border-color: rgba(18,32,24,0.18);
       color: var(--text);
-    }
-
-    .btn:active{
-      transform: translateY(1px);
     }
 
     .playIcon, .shuffleIcon{
@@ -183,7 +176,6 @@
     </div>
 
     <div class="actions">
-      <!-- Play sound -->
       <button class="btn sound" id="soundBtn" type="button" aria-label="Play sound">
         <svg class="playIcon" viewBox="0 0 64 64" role="img" aria-hidden="true">
           <circle cx="32" cy="32" r="28" fill="currentColor"></circle>
@@ -191,11 +183,9 @@
         </svg>
       </button>
 
-      <!-- Show narrative -->
       <button class="btn narrative" id="narrativeBtn" type="button">Narrative</button>
 
-      <!-- Next bee (shuffle) -->
-      <a class="btn next" id="nextBtn" href="/interactive" aria-label="Next bee">
+      <a class="btn next" href="/interactive" aria-label="Next bee">
         <svg class="shuffleIcon" viewBox="0 0 24 24" role="img" aria-hidden="true">
           <path d="M16 3h5v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M4 20l7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

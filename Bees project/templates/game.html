@@ -1,0 +1,350 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bee Quiz</title>
+
+  <style>
+    :root{
+      --red: #c1121f;
+      --green: #2a9d3f;
+      --bg: #f7fff7;
+      --card: #ffffff;
+      --border: #d7ead9;
+      --text: #122018;
+    }
+
+    body{
+      font-family: system-ui, Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page{
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      box-sizing: border-box;
+      align-items: center;
+    }
+
+    .topbar{
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, rgba(193,18,31,0.12), rgba(42,157,63,0.12));
+      border: 1px solid rgba(42,157,63,0.25);
+      box-sizing: border-box;
+    }
+
+    .title{
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .back{
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid rgba(193,18,31,0.35);
+      background: rgba(193,18,31,0.10);
+      color: var(--red);
+      font-weight: 650;
+    }
+
+    .panel{
+      width: 100%;
+      max-width: 900px;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      border: 2px solid var(--border);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      box-sizing: border-box;
+    }
+
+    .meta{
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .question{
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .choices{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .choice{
+      border-radius: 16px;
+      padding: 12px;
+      border: 2px solid var(--border);
+      background: white;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 160px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .choice img{
+      width: 220px;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      -webkit-user-drag: none;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .choice.correct{
+      border-color: rgba(42,157,63,0.65);
+      box-shadow: 0 0 0 3px rgba(42,157,63,0.18);
+    }
+
+    .choice.wrong{
+      border-color: rgba(193,18,31,0.65);
+      box-shadow: 0 0 0 3px rgba(193,18,31,0.16);
+    }
+
+    .status{
+      margin-top: 14px;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .done{
+      display: none;
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .restart{
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid rgba(42,157,63,0.45);
+      background: rgba(42,157,63,0.14);
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 700;
+      text-align: center;
+      width: fit-content;
+    }
+
+    @media (max-width: 700px){
+      .choices{ grid-template-columns: 1fr; }
+      .choice img{ width: 190px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="title">Bee Quiz</div>
+      <a class="back" href="/">Back</a>
+    </div>
+
+    <div class="panel">
+      <div class="meta">
+        <div id="progressText">Question 1 of 5</div>
+        <div id="timerText">Time: 20</div>
+        <div id="scoreText">Score: 0</div>
+      </div>
+
+      <div class="question" id="questionText"></div>
+
+      <div class="choices" id="choicesGrid"></div>
+
+      <div class="status" id="statusText"></div>
+      <div class="done" id="doneText"></div>
+      <a class="restart" id="restartLink" href="/game">Play again</a>
+    </div>
+  </div>
+
+  <script>
+    const beeFiles = {{ bee_files|tojson }};
+    const questions = {{ questions|tojson }};
+
+    const questionText = document.getElementById("questionText");
+    const choicesGrid = document.getElementById("choicesGrid");
+    const statusText = document.getElementById("statusText");
+    const progressText = document.getElementById("progressText");
+    const timerText = document.getElementById("timerText");
+    const scoreText = document.getElementById("scoreText");
+    const doneText = document.getElementById("doneText");
+    const restartLink = document.getElementById("restartLink");
+
+    const allBeeIds = Object.keys(beeFiles);
+
+    let current = 0;
+    let score = 0;
+    let timeLeft = 20;
+    let timer = null;
+    let locked = false;
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function startTimer() {
+      stopTimer();
+      timeLeft = 20;
+      timerText.textContent = "Time: " + timeLeft;
+
+      timer = setInterval(() => {
+        timeLeft -= 1;
+        timerText.textContent = "Time: " + timeLeft;
+
+        if (timeLeft <= 0) {
+          stopTimer();
+          onTimeout();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+
+    function prettyName(id) {
+      const spaced = id.replace(/([a-z])([A-Z])/g, "$1 $2");
+      return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+    }
+
+    function buildChoices(correctId) {
+      const picks = [correctId];
+      const pool = allBeeIds.filter(id => id !== correctId);
+      shuffle(pool);
+
+      while (picks.length < 4 && pool.length) {
+        picks.push(pool.pop());
+      }
+
+      return shuffle(picks);
+    }
+
+    function renderQuestion() {
+      locked = false;
+      statusText.textContent = "";
+
+      const q = questions[current];
+      progressText.textContent = `Question ${current + 1} of ${questions.length}`;
+      scoreText.textContent = `Score: ${score}`;
+      questionText.textContent = q.question;
+
+      const options = buildChoices(q.answer);
+
+      choicesGrid.innerHTML = "";
+      options.forEach((beeId) => {
+        const div = document.createElement("div");
+        div.className = "choice";
+        div.dataset.beeId = beeId;
+
+        const img = document.createElement("img");
+        img.src = "/static/images/bees/" + beeFiles[beeId];
+        img.alt = beeId;
+
+        div.appendChild(img);
+
+        div.addEventListener("click", () => onPick(beeId, div));
+        choicesGrid.appendChild(div);
+      });
+
+      startTimer();
+    }
+
+    function markCorrectWrong(correctId, pickedId) {
+      const nodes = Array.from(document.querySelectorAll(".choice"));
+      nodes.forEach(n => {
+        const id = n.dataset.beeId;
+        if (id === correctId) n.classList.add("correct");
+        if (pickedId && id === pickedId && pickedId !== correctId) n.classList.add("wrong");
+      });
+    }
+
+    function nextStep() {
+      current += 1;
+      if (current >= questions.length) {
+        finishQuiz();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function onPick(beeId) {
+      if (locked) return;
+      locked = true;
+      stopTimer();
+
+      const q = questions[current];
+      const correct = q.answer;
+
+      if (beeId === correct) {
+        score += 1;
+        statusText.textContent = "Correct!";
+      } else {
+        statusText.textContent = `Wrong. Correct was ${prettyName(correct)}.`;
+      }
+
+      scoreText.textContent = `Score: ${score}`;
+      markCorrectWrong(correct, beeId);
+
+      setTimeout(nextStep, 900);
+    }
+
+    function onTimeout() {
+      if (locked) return;
+      locked = true;
+
+      const q = questions[current];
+      statusText.textContent = `Time's up. Correct was ${prettyName(q.answer)}.`;
+      markCorrectWrong(q.answer, null);
+
+      setTimeout(nextStep, 900);
+    }
+
+    function finishQuiz() {
+      stopTimer();
+      questionText.textContent = "Quiz finished!";
+      choicesGrid.innerHTML = "";
+      timerText.textContent = "Time: -";
+      progressText.textContent = `Done`;
+      doneText.style.display = "block";
+      doneText.textContent = `Final score: ${score} / ${questions.length}`;
+      restartLink.style.display = "inline-block";
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
