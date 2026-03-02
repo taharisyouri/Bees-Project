@@ -11,95 +11,63 @@ from pathlib import Path
 SOUNDS_DIR = Path(__file__).resolve().parent / "sounds"
 SAMPLE_RATE = 44100
 
-BEES = [
-    # (
-    #     "honey",
-    #     "Honey Bee",
-    #     440,
-    #     "Honey bees live in colonies and turn nectar into honey and wax. "
-    #     "They use a waggle dance to tell other bees where good flowers are. "
-    #     "You can find them worldwide in gardens, farms, and anywhere flowers grow.",
-    # ),
-    # (
-    #     "bumble",
-    #     "Bumble Bee",
-    #     392,
-    #     "Bumble bees are fuzzy pollinators that often live in small nests. "
-    #     "They can buzz-pollinate by vibrating flowers to shake loose pollen. "
-    #     "They are common in gardens and meadows, especially in cooler and temperate areas.",
-    # ),
-    # (
-    #     "carpenter",
-    #     "Carpenter Bee",
-    #     330,
-    #     "Carpenter bees are large bees with shiny, dark abdomens. "
-    #     "They drill neat round holes in wood to make nesting tunnels. "
-    #     "They are often found near wooden decks, fences, sheds, and dead trees.",
-    # ),
-    # (
-    #     "leafcutter",
-    #     "Leafcutter Bee",
-    #     523,
-    #     "Leafcutter bees are solitary bees that visit many kinds of flowers. "
-    #     "They cut smooth circles from leaves and use them to line their nest cells. "
-    #     "They are common in gardens, parks, and fields where leafy plants and flowers are nearby.",
-    # ),
-    # (
-    #     "mason",
-    #     "Mason Bee",
-    #     349,
-    #     "Mason bees are gentle solitary bees that nest in small holes and tubes. "
-    #     "They use mud like mortar to seal each chamber for their eggs. "
-    #     "They are commonly found in spring around orchards, gardens, and woodland edges.",
-    # ),
-    # (
-    #     "blue_mason",
-    #     "Blue Mason Bee",
-    #     587,
-    #     "Blue mason bees are metallic blue and look almost like tiny flying jewels. "
-    #     "They are strong early-season pollinators and are great for fruit blossoms. "
-    #     "They are often found in spring in orchards and backyards where nesting holes are available.",
-    # ),
-    # (
-    #     "sweat",
-    #     "Sweat Bee",
-    #     659,
-    #     "Sweat bees are usually small and can be green, blue, or dark colored. "
-    #     "Some are attracted to salty sweat and may land on your skin for a quick sip. "
-    #     "They are commonly found in sunny gardens and open areas, often nesting in the ground.",
-    # ),
-    # (
-    #     "queen",
-    #     "Queen Bee",
-    #     294,
-    #     "The queen bee is the main egg-layer in a honey bee colony. "
-    #     "She releases pheromones that help keep the hive organized and calm. "
-    #     "You will usually find her inside the hive surrounded by worker bees.",
-    # ),
+# ----------------------------
+# Insects (bee1..bee8 => insect1..insect8)
+# ----------------------------
+INSECTS = [
+    ("insect1", "Butterfly",
+     "Butterflies are colorful insects with scaly wings that sip nectar from flowers. [[slnc 700]] "
+     "They go through a full metamorphosis, changing from caterpillar to butterfly. [[slnc 700]] "
+     "You can find them in gardens, meadows, forests, and parks around the world."),
+    ("insect2", "Cicada",
+     "Cicadas are stout insects known for their loud summer buzzing sounds. [[slnc 700]] "
+     "Some species spend many years underground as nymphs before emerging all at once. [[slnc 700]] "
+     "They are common in warm regions with trees, like forests, neighborhoods, and city parks."),
+    ("insect3", "Mosquito",
+     "Mosquitoes are small flying insects with a thin body and a long mouthpart for feeding. [[slnc 700]] "
+     "Only females bite, because they need protein from blood to make eggs. [[slnc 700]] "
+     "They live near standing water in most parts of the world, especially in warm and humid areas."),
+    ("insect4", "Moth",
+     "Moths are night flying insects with soft bodies and dusty wings. [[slnc 700]] "
+     "Many moths use the moon for navigation, which is why bright lights can confuse them. [[slnc 700]] "
+     "They are found almost everywhere, from forests and fields to backyards and porch lights."),
+    ("insect5", "Grasshopper",
+     "Grasshoppers are jumping insects with strong back legs and chewing mouthparts. [[slnc 700]] "
+     "They make a rasping sound by rubbing their legs or wings together. [[slnc 700]] "
+     "They are common in grassy fields, farms, prairies, and roadside plants."),
+    ("insect6", "Fly",
+     "Flies are fast flying insects with large eyes and a single pair of wings. [[slnc 700]] "
+     "Houseflies taste with their feet and can walk on walls using tiny sticky pads. [[slnc 700]] "
+     "They are found worldwide, especially around people, trash, food, and animals."),
+    ("insect7", "Cricket",
+     "Crickets are small insects that usually sing at night. [[slnc 700]] "
+     "Males chirp by rubbing their wings together to attract mates. [[slnc 700]] "
+     "They live in grass, leaf litter, gardens, and warm sheltered places."),
+    ("insect8", "Wasp",
+     "Wasps are slender insects with narrow waists and often bright warning colors. [[slnc 700]] "
+     "Many wasps are predators that hunt other insects, helping control pests. [[slnc 700]] "
+     "They are found in gardens, woodlands, and around buildings where they build nests."),
 ]
 
+# ----------------------------
+# Quiz speech (with pauses)
+# ----------------------------
 QUIZ_WELCOME_TEXT = (
-    "Welcome to the Bee Quiz. [[slnc 700]] "
-    "We will be asking you a few questions about bees. [[slnc 700]] "
-    "You will get ten seconds to find the correct answer. [[slnc 700]] "
+    "Welcome to the Insect Quiz. [[slnc 700]] "
+    "We will play different insect sounds. [[slnc 700]] "
+    "You will get ten seconds to find the correct insect for the sound you hear. [[slnc 700]] "
     "Press and hold the Quiz button for two seconds if you are ready to go. [[slnc 900]] "
-    "To abort the quiz at any time after it begins, press and hold the Quiz button for two seconds."
+    "To abort the quiz at any time press the ABORT button. [[slnc 900]]"
 )
 
-QUIZ_READY_TEXT = "Great Lets start the quiz then."
+QUIZ_READY_TEXT = "Great. Let's start the quiz.[[slnc 900]]"
 
-QUESTIONS = [
-    ("question1.wav", "Question one. Which bee makes honey? You have ten seconds. Choose now."),
-    ("question2.wav", "Question two. Which bee is fuzzy and can buzz pollinate flowers? You have ten seconds. Choose now."),
-    ("question3.wav", "Question three. Which bee drills round holes in wood to build a nest? You have ten seconds. Choose now."),
-    ("question4.wav", "Question four. Which bee cuts circles from leaves to line its nest? You have ten seconds. Choose now."),
-    ("question5.wav", "Question five. Which bee is metallic blue and active in early spring? You have ten seconds. Choose now."),
-    ("question6.wav", "Question six. Which bee is the main egg layer in a honey bee colony? You have ten seconds. Choose now."),
-]
+
 
 CORRECT_TEXT = "That is correct."
 INCORRECT_TEXT = "That is not correct."
 QUIZ_COMPLETE_TEXT = "Quiz complete. Thanks for playing."
+QUIZ_ABORT_TEXT = "Quiz aborted."
 
 def clamp(x, lo=-1.0, hi=1.0):
     return lo if x < lo else hi if x > hi else x
@@ -179,17 +147,16 @@ def main():
     random.seed(0)
     SOUNDS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Bee sounds + narrations
-    for key, label, freq, narration in BEES:
-        short_path = SOUNDS_DIR / f"{key}_short.wav"
-        nar_path = SOUNDS_DIR / f"{key}_narration.wav"
-        write_wav(short_path, make_short(freq))
-        tts_to_wav(narration, nar_path)
-        print(f"OK: {label} -> {short_path.name}, {nar_path.name}")
+    # Create insect narrations: insect1_narration.wav ... insect8_narration.wav
+    for key, label, narration in INSECTS:
+        out_path = SOUNDS_DIR / f"{key}_narration.wav"
+        tts_to_wav(narration, out_path)
+        print(f"OK: {label} -> {out_path.name}")
 
     # Quiz system audio
     tts_to_wav(QUIZ_WELCOME_TEXT, SOUNDS_DIR / "quiz_welcome.wav")
     tts_to_wav(QUIZ_READY_TEXT, SOUNDS_DIR / "quiz_ready.wav")
+    tts_to_wav(QUIZ_ABORT_TEXT, SOUNDS_DIR / "quiz_abort.wav")
     tts_to_wav(CORRECT_TEXT, SOUNDS_DIR / "correct.wav")
     tts_to_wav(INCORRECT_TEXT, SOUNDS_DIR / "incorrect.wav")
     tts_to_wav(QUIZ_COMPLETE_TEXT, SOUNDS_DIR / "quiz_complete.wav")
@@ -198,7 +165,7 @@ def main():
     for filename, text in QUESTIONS:
         tts_to_wav(text, SOUNDS_DIR / filename)
 
-    print("OK: quiz + questions generated in sounds/")
+    print("OK: insect narrations + quiz audio generated in sounds/")
 
 if __name__ == "__main__":
     main()
